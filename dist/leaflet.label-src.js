@@ -7,13 +7,13 @@
 	https://github.com/jacobtoye
 */
 (function (window, document, undefined) {
-var L = window.L;/*
+/*
  * Leaflet.label assumes that you have already included the Leaflet library.
  */
 
 L.labelVersion = '0.2.2-dev';
 
-L.Label = L.Layer.extend({
+L.Label = L.Class.extend({
 
 	includes: L.Mixin.Events,
 
@@ -24,8 +24,7 @@ L.Label = L.Layer.extend({
 		noHide: false,
 		offset: [12, -15], // 6 (width of the label triangle) + 6 (padding)
 		opacity: 1,
-		zoomAnimation: true,
-		pane: "popupPane"
+		zoomAnimation: true
 	},
 
 	initialize: function (options, source) {
@@ -39,11 +38,7 @@ L.Label = L.Layer.extend({
 	onAdd: function (map) {
 		this._map = map;
 
-		if (this.options.pane !== "popupPane") {
-			this._pane = map.getPane(this.options.pane);
-		} else {
-			this._pane = this._source instanceof L.Marker ? this._source.getPane() : map.getPane("popupPane");
-		}
+		this._pane = this._source instanceof L.Marker ? map._panes.markerPane : map._panes.popupPane;
 
 		if (!this._container) {
 			this._initLayout();
